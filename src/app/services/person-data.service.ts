@@ -9,12 +9,21 @@ import { Person } from '../models/person';
   providedIn: 'root',
 })
 export class PersonDataService {
+  persons$: Observable<Person[]>;
+
   constructor(private http: HttpClient) {}
 
-  findAllPersons(): Observable<any[]> {
-    return this.http
+  findAllPersons(): Observable<Person[]> {
+    this.persons$ = this.http
       .get<ResultViewModel<Person[]>>(`${environment.apiUrl}/persons`)
-      .pipe(map((response) => response.data));
+      .pipe(
+        map((response) => {
+          console.log(response.data);
+          return response.data;
+        })
+      );
+
+    return this.persons$;
   }
 
   findPersonById(id: string): Observable<Person> {
@@ -23,5 +32,24 @@ export class PersonDataService {
       .pipe(map((response) => response.data));
   }
 
-  // Todo POST / PUT / DELETE
+  createPerson(person: Person): Observable<Person> {
+    return this.http
+      .post<ResultViewModel<Person>>(`${environment.apiUrl}/persons`, person)
+      .pipe(map((response) => response.data));
+  }
+
+  editPersonById(id: string, person: Person): Observable<Person> {
+    return this.http
+      .post<ResultViewModel<Person>>(
+        `${environment.apiUrl}/persons/${id}`,
+        person
+      )
+      .pipe(map((response) => response.data));
+  }
+
+  deletePersonById(id: string): Observable<Person> {
+    return this.http
+      .delete<ResultViewModel<Person>>(`${environment.apiUrl}/persons/${id}`)
+      .pipe(map((response) => response.data));
+  }
 }

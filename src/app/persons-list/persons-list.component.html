@@ -1,13 +1,66 @@
-<main>
-  <h1 class="page-title">Contact List</h1>
+<div class="person-list-content">
+  <h1 class="person-page-title">Persons List</h1>
+</div>
+
+<mat-list>
+  <mat-divider></mat-divider>
+  <mat-list-item
+    *ngFor="let person of personDataService.persons$ | async"
+    class="person-list-item"
+  >
+    <div class="person-list-item-content">
+      <span>{{ person.name }}</span>
+      <div>
+        <button
+          mat-mini-fab
+          color="accent"
+          matTooltip="Edit person"
+          matTooltipPosition="left"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="warn"
+          matTooltip="Delete person"
+          matTooltipPosition="right"
+          (click)="onDeletePerson(person)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="primary"
+          matTooltip="Go to contacts"
+          matTooltipPosition="right"
+        >
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+</mat-list>
+
+<div class="person-list-content">
   <button
+    mat-fab
+    extended
+    color="primary"
+    routerLink="/"
+    (click)="onCreatePerson()"
+  >
+    <mat-icon>add</mat-icon>
+    Add new person
+  </button>
+
+  <!-- <button
     mat-mini-fab
     routerLink="/"
     matTooltip="Add new person"
     matTooltipPosition="right"
-    [matTooltipShowDelay]="200"
-    [matTooltipHideDelay]="200"
+    (click)="onCreatePerson()"
   >
     <mat-icon>add</mat-icon>
-  </button>
-</main>
+  </button> -->
+</div>
