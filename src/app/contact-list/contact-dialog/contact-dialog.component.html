@@ -1,0 +1,61 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <mat-select
+      placeholder="Contact type"
+      formControlName="contactType"
+      #contactType
+    >
+      <ng-container
+        *ngFor="let contactType of contactDataService.contactTypes$ | async"
+      >
+        <mat-option [value]="contactType.id">{{ contactType.name }}</mat-option>
+      </ng-container>
+    </mat-select>
+
+    <mat-error *ngIf="errorHandling('contactType', 'required')"
+      >This contact type is mandatory</mat-error
+    >
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Contact value"
+      formControlName="contactValue"
+      [disabled]="!contactType.value"
+      #contactValue
+    />
+    <mat-hint align="end"> {{ contactValue.value.length }} / 50 </mat-hint>
+
+    <mat-error *ngIf="errorHandling('contactValue', 'required')"
+      >This contact value is mandatory</mat-error
+    >
+    <mat-error *ngIf="errorHandling('contactValue', 'email')"
+      >This contact value must have valid email</mat-error
+    >
+
+    <mat-error *ngIf="errorHandling('contactValue', 'pattern')"
+      >This contact value must have valid phone</mat-error
+    >
+
+    <mat-error *ngIf="errorHandling('contactValue', 'minlength')"
+      >This contact value must have minimum length of 3</mat-error
+    >
+    <mat-error *ngIf="errorHandling('contactValue', 'maxlength')"
+      >This contact value must have maximum length of 50</mat-error
+    >
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close cdkFocusInitial>Close</button>
+  <button
+    mat-raised-button
+    color="warn"
+    mat-dialog-close
+    [disabled]="!form.valid"
+    (click)="onSave()"
+  >
+    Save
+  </button>
+</div>

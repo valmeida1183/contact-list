@@ -12,21 +12,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { PersonsListComponent } from './persons-list/persons-list.component';
-import { AboutComponent } from './about/about.component';
 import { DeleteDialogComponent } from './shared/delete-dialog/delete-dialog.component';
 import { PersonDialogComponent } from './persons-list/person-dialog/person-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ContactListComponent } from './contact-list/contact-list.component';
+import { ContactDialogComponent } from './contact-list/contact-dialog/contact-dialog.component';
+import { PageTitleComponent } from './shared/page-title/page-title.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PersonsListComponent,
-    AboutComponent,
     DeleteDialogComponent,
     PersonDialogComponent,
+    ContactListComponent,
+    ContactDialogComponent,
+    PageTitleComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +46,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatListModule,
     MatDialogModule,
     MatInputModule,
+    MatSelectModule,
     ReactiveFormsModule,
   ],
   providers: [],

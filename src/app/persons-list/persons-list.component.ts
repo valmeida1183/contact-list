@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy } from '@angular/core';
 import { Person } from '../models/person';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../shared/delete-dialog/delete-dialog.component';
 import { PersonDataService } from '../services/person-data.service';
-import { Subscription, concatMap, switchMap } from 'rxjs';
+import { Subscription, concatMap } from 'rxjs';
 import { PersonDialogComponent } from './person-dialog/person-dialog.component';
 
 @Component({
@@ -13,31 +12,40 @@ import { PersonDialogComponent } from './person-dialog/person-dialog.component';
   styleUrls: ['./persons-list.component.scss'],
 })
 export class PersonsListComponent implements OnDestroy {
-  personsSubscription: Subscription;
+  private personDialogConfig: MatDialogConfig = {
+    width: '25rem',
+    enterAnimationDuration: '100ms',
+    exitAnimationDuration: '100ms',
+    data: {},
+  };
+  private deleteSubscription: Subscription;
+  private createSubscription: Subscription;
+  private editSubscription: Subscription;
 
   constructor(
     protected personDataService: PersonDataService,
-    private activatedRoute: ActivatedRoute,
     private dialog: MatDialog
   ) {}
 
   ngOnDestroy(): void {
-    this.personsSubscription.unsubscribe();
+    this.deleteSubscription?.unsubscribe();
+    this.createSubscription?.unsubscribe();
+    this.editSubscription?.unsubscribe();
   }
 
   onDeletePerson(person: Person) {
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      width: '25rem',
-      enterAnimationDuration: '100ms',
-      exitAnimationDuration: '100ms',
-      data: {
-        title: 'Delete Person?',
-        message: `Would you like to delete ${person.name}?`,
-        id: person.id,
-      },
-    });
+    this.personDialogConfig.data = {
+      title: 'Delete Person?',
+      message: `Would you like to delete ${person.name}?`,
+      id: person.id,
+    };
 
-    this.personsSubscription = dialogRef.componentInstance.onDeleteEmitter
+    const dialogRef = this.dialog.open(
+      DeleteDialogComponent,
+      this.personDialogConfig
+    );
+
+    this.deleteSubscription = dialogRef.componentInstance.onDeleteEmitter
       .pipe(
         concatMap((personId) =>
           this.personDataService.deletePersonById(personId)
@@ -48,18 +56,37 @@ export class PersonsListComponent implements OnDestroy {
   }
 
   onCreatePerson() {
-    const dialogRef = this.dialog.open(PersonDialogComponent, {
-      width: '25rem',
-      enterAnimationDuration: '100ms',
-      exitAnimationDuration: '100ms',
-      data: {
-        title: 'Create Person',
-      },
-    });
+    this.personDialogConfig.data = {
+      title: 'Create Person',
+    };
 
-    this.personsSubscription = dialogRef.componentInstance.onSaveEmitter
+    const dialogRef = this.dialog.open(
+      PersonDialogComponent,
+      this.personDialogConfig
+    );
+
+    this.createSubscription = dialogRef.componentInstance.onCreateEmitter
       .pipe(
         concatMap((person) => this.personDataService.createPerson(person)),
+        concatMap(() => this.personDataService.findAllPersons())
+      )
+      .subscribe();
+  }
+
+  onEditPerson(person: Person) {
+    this.personDialogConfig.data = {
+      title: 'Edit Person',
+      person,
+    };
+
+    const dialogRef = this.dialog.open(
+      PersonDialogComponent,
+      this.personDialogConfig
+    );
+
+    this.editSubscription = dialogRef.componentInstance.onUpdateEmitter
+      .pipe(
+        concatMap((person) => this.personDataService.editPersonById(person)),
         concatMap(() => this.personDataService.findAllPersons())
       )
       .subscribe();

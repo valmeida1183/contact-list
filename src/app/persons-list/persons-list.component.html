@@ -1,66 +1,51 @@
-<div class="person-list-content">
-  <h1 class="person-page-title">Persons List</h1>
-</div>
+<app-page-title [title]="'Persons List'"></app-page-title>
 
-<mat-list>
-  <mat-divider></mat-divider>
-  <mat-list-item
-    *ngFor="let person of personDataService.persons$ | async"
-    class="person-list-item"
-  >
-    <div class="person-list-item-content">
-      <span>{{ person.name }}</span>
-      <div>
-        <button
-          mat-mini-fab
-          color="accent"
-          matTooltip="Edit person"
-          matTooltipPosition="left"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button
-          mat-mini-fab
-          color="warn"
-          matTooltip="Delete person"
-          matTooltipPosition="right"
-          (click)="onDeletePerson(person)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button
-          mat-mini-fab
-          color="primary"
-          matTooltip="Go to contacts"
-          matTooltipPosition="right"
-        >
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
+<ng-container *ngIf="personDataService.persons$ | async as persons">
+  <div *ngIf="persons?.length === 0">Persons List Empty</div>
+
+  <mat-list *ngIf="persons && persons.length > 0">
+    <mat-divider></mat-divider>
+    <mat-list-item *ngFor="let person of persons" class="person-list-item">
+      <div class="person-list-item-content">
+        <span>{{ person.name }}</span>
+        <div>
+          <button
+            mat-mini-fab
+            color="accent"
+            matTooltip="Edit person"
+            matTooltipPosition="left"
+            (click)="onEditPerson(person)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            matTooltip="Delete person"
+            matTooltipPosition="right"
+            (click)="onDeletePerson(person)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="primary"
+            matTooltip="Go to contacts"
+            matTooltipPosition="right"
+            [routerLink]="['person', person.id]"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
       </div>
-    </div>
-  </mat-list-item>
-  <mat-divider></mat-divider>
-</mat-list>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</ng-container>
 
-<div class="person-list-content">
-  <button
-    mat-fab
-    extended
-    color="primary"
-    routerLink="/"
-    (click)="onCreatePerson()"
-  >
+<div class="list-content">
+  <button mat-fab extended color="primary" (click)="onCreatePerson()">
     <mat-icon>add</mat-icon>
     Add new person
   </button>
-
-  <!-- <button
-    mat-mini-fab
-    routerLink="/"
-    matTooltip="Add new person"
-    matTooltipPosition="right"
-    (click)="onCreatePerson()"
-  >
-    <mat-icon>add</mat-icon>
-  </button> -->
 </div>

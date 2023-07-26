@@ -10,6 +10,7 @@ import { Person } from '../models/person';
 })
 export class PersonDataService {
   persons$: Observable<Person[]>;
+  person$: Observable<Person>;
 
   constructor(private http: HttpClient) {}
 
@@ -27,9 +28,11 @@ export class PersonDataService {
   }
 
   findPersonById(id: string): Observable<Person> {
-    return this.http
+    this.person$ = this.http
       .get<ResultViewModel<Person>>(`${environment.apiUrl}/persons/${id}`)
       .pipe(map((response) => response.data));
+
+    return this.person$;
   }
 
   createPerson(person: Person): Observable<Person> {
@@ -38,10 +41,10 @@ export class PersonDataService {
       .pipe(map((response) => response.data));
   }
 
-  editPersonById(id: string, person: Person): Observable<Person> {
+  editPersonById(person: Person): Observable<Person> {
     return this.http
-      .post<ResultViewModel<Person>>(
-        `${environment.apiUrl}/persons/${id}`,
+      .put<ResultViewModel<Person>>(
+        `${environment.apiUrl}/persons/${person.id}`,
         person
       )
       .pipe(map((response) => response.data));

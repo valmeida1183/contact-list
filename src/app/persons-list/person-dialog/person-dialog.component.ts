@@ -10,7 +10,8 @@ import { Person } from 'src/app/models/person';
 })
 export class PersonDialogComponent implements OnInit {
   form: FormGroup;
-  onSaveEmitter = new EventEmitter<Person>();
+  onCreateEmitter = new EventEmitter<Person>();
+  onUpdateEmitter = new EventEmitter<Person>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,8 +24,20 @@ export class PersonDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    const person: Person = { name: this.form.controls['name'].value };
-    this.onSaveEmitter.emit(person);
+    if (!this.data) {
+      return;
+    }
+
+    const person: Person = {
+      ...this.data.person,
+      name: this.form.controls['name'].value,
+    };
+
+    const emmiter = this.data.person?.id
+      ? this.onUpdateEmitter
+      : this.onCreateEmitter;
+
+    emmiter.emit(person);
     this.dialogRef.close();
   }
 
@@ -33,9 +46,11 @@ export class PersonDialogComponent implements OnInit {
   };
 
   private loadFormConfiguration() {
+    const { name } = this.data?.person ?? {};
+
     this.form = this.formBuilder.group({
       name: [
-        '',
+        name,
         {
           validators: [
             Validators.required,

@@ -1,0 +1,50 @@
+<ng-container *ngIf="personDataService.person$ | async as person">
+  <app-page-title [title]="person.name"></app-page-title>
+
+  <div
+    *ngIf="!person.contacts || person.contacts.length === 0"
+    class="list-empty-content"
+  >
+    <span>Contact list is empty!</span>
+  </div>
+
+  <mat-list *ngIf="person.contacts && person.contacts.length > 0">
+    <mat-divider></mat-divider>
+    <mat-list-item
+      *ngFor="let contact of person.contacts"
+      class="contact-list-item"
+    >
+      <div class="contact-list-item-content">
+        <span>{{ contact.value }}</span>
+        <div>
+          <button
+            mat-mini-fab
+            color="accent"
+            matTooltip="Edit contact"
+            matTooltipPosition="left"
+            (click)="onEditContact(contact)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            matTooltip="Delete contact"
+            matTooltipPosition="right"
+            (click)="onDeleteContact(contact)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </mat-list>
+</ng-container>
+
+<div class="list-content">
+  <button mat-fab extended color="primary" (click)="onCreateContact()">
+    <mat-icon>add</mat-icon>
+    Add new contact
+  </button>
+</div>

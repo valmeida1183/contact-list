@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PersonsListComponent } from './persons-list/persons-list.component';
-import { AboutComponent } from './about/about.component';
 import { personListResolver } from './resolvers/person-list.resolver';
+import { ContactListComponent } from './contact-list/contact-list.component';
+import { personResolver } from './resolvers/person.resolver';
+import { contactTypeListResolver } from './resolvers/contact-type-list.resolver';
 
 const routes: Routes = [
   {
@@ -13,8 +15,12 @@ const routes: Routes = [
     },
   },
   {
-    path: 'about',
-    component: AboutComponent,
+    path: 'person/:id',
+    component: ContactListComponent,
+    resolve: {
+      person: personResolver,
+      contactTypes: contactTypeListResolver,
+    },
   },
   {
     path: '**',

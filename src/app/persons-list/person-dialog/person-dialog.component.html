@@ -4,9 +4,15 @@
     <input matInput placeholder="Name" formControlName="name" #name />
     <mat-hint align="end"> {{ name.value.length }} / 30 </mat-hint>
 
-    <mat-error *ngIf="errorHandling('name', 'required')"
-      >This name is mandatory</mat-error
-    >
+    <mat-error *ngIf="errorHandling('name', 'required')">
+      This name is mandatory
+    </mat-error>
+    <mat-error *ngIf="errorHandling('name', 'minlength')">
+      This person name must have minimum length of 3
+    </mat-error>
+    <mat-error *ngIf="errorHandling('name', 'maxlength')"
+      >This person name must have maximum length of 30
+    </mat-error>
   </mat-form-field>
 </div>
 <div mat-dialog-actions align="end">
