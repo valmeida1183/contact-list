@@ -1,7 +1,9 @@
 <app-page-title [title]="'Persons List'"></app-page-title>
 
 <ng-container *ngIf="personDataService.persons$ | async as persons">
-  <div *ngIf="persons?.length === 0">Persons List Empty</div>
+  <div *ngIf="persons?.length === 0" class="list-empty-content">
+    <span>Persons list is empty!</span>
+  </div>
 
   <mat-list *ngIf="persons && persons.length > 0">
     <mat-divider></mat-divider>
